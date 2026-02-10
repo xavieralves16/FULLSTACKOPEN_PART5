@@ -3,6 +3,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 
 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [notification, setNotification] = useState(null)
+
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -31,6 +34,14 @@ const App = () => {
     }
   }, [user])
 
+  const showNotification = (message, duration = 5000) => {
+    setNotification(message)
+    setTimeout(() => {
+      setNotification(null)
+    }, duration)
+  }
+
+
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -43,8 +54,10 @@ const App = () => {
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
+      showNotification(`Welcome ${user.name}!`)
     } catch (exception) {
       console.error('wrong credentials')
+      showNotification('Wrong username or password')
     }
   }
 
@@ -58,8 +71,10 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(prevBlogs => prevBlogs.concat(returnedBlog))
+      showNotification(`A new blog "${returnedBlog.title}" by ${returnedBlog.author} added!`)
     } catch (exception) {
       console.error('error creating blog', exception)
+      showNotification('Failed to create blog')
     }
   }
 
@@ -67,6 +82,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={notification} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -93,6 +109,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={notification} />
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
