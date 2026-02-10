@@ -1,5 +1,5 @@
 const Notification = ({ message }) => {
-  if (!message) return null 
+  if (!message) return null
 
   const style = {
     border: '1px solid black',

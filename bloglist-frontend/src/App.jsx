@@ -52,23 +52,23 @@ const App = () => {
     try {
       const user = await loginService.login({ username, password })
 
-      setUser(user) 
-      localStorage.setItem('loggedBlogAppUser', JSON.stringify(user)) 
+      setUser(user)
+      localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUsername('')
       setPassword('')
       showNotification(`Welcome ${user.name}!`)
     } catch (exception) {
-      console.error('wrong credentials')
+      console.error('wrong credentials', exception)
       showNotification('Wrong username or password')
     }
   }
 
   const handleLogout = () => {
-      setUser(null) 
-      localStorage.removeItem('loggedBlogAppUser') 
-    }
-  
+    setUser(null)
+    localStorage.removeItem('loggedBlogAppUser')
+  }
+
 
   const addBlog = async (blogObject) => {
     try {

@@ -8,8 +8,8 @@ const BlogForm = ({ createBlog }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
     if (!title || !author || !url) {
-        alert('All fields are required')
-        return
+      alert('All fields are required')
+      return
     }
     createBlog({ title, author, url })
     setTitle('')

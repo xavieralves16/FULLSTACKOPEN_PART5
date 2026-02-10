@@ -11,7 +11,7 @@ const Blog = ({ blog, user, updateBlogList }) => {
 
   const handleLike = async () => {
     const updatedBlog = {
-      user: blog.user.id, 
+      user: blog.user.id,
       likes: likes + 1,
       author: blog.author,
       title: blog.title,
@@ -21,7 +21,8 @@ const Blog = ({ blog, user, updateBlogList }) => {
     try {
       const returnedBlog = await blogService.update(blog.id, updatedBlog)
       setLikes(returnedBlog.likes)
-      if (updateBlog) updateBlog(returnedBlog) 
+      returnedBlog.user = blog.user
+      if (updateBlogList) updateBlogList(returnedBlog)
     } catch (exception) {
       console.error('Error updating likes', exception)
     }
@@ -33,7 +34,7 @@ const Blog = ({ blog, user, updateBlogList }) => {
 
     try {
       await blogService.remove(blog.id)
-      if (updateBlogList) updateBlogList(blog.id, true) 
+      if (updateBlogList) updateBlogList(blog.id, true)
     } catch (exception) {
       console.error('Error deleting blog', exception)
     }
