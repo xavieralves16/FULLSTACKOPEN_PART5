@@ -4,6 +4,7 @@ const middleware = require('./utils/middleware')
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+require('dotenv').config()
 
 const app = express()
 
