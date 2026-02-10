@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+
 
 
 const App = () => {
@@ -12,7 +14,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
-
+  const blogFormRef = useRef()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -72,6 +74,7 @@ const App = () => {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(prevBlogs => prevBlogs.concat(returnedBlog))
       showNotification(`A new blog "${returnedBlog.title}" by ${returnedBlog.author} added!`)
+      blogFormRef.current.toggleVisibility()
     } catch (exception) {
       console.error('error creating blog', exception)
       showNotification('Failed to create blog')
@@ -114,7 +117,10 @@ const App = () => {
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
 
-      <BlogForm createBlog={addBlog} />
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+
 
       {blogs.map(blog => (
         <Blog key={blog.id} blog={blog} />
