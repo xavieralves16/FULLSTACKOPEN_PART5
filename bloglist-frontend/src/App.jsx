@@ -82,6 +82,18 @@ const App = () => {
     }
   }
 
+  const updateBlogList = (updatedBlogOrId, deleted = false) => {
+    if (deleted) {
+      setBlogs(prevBlogs => prevBlogs.filter(blog => blog.id !== updatedBlogOrId))
+    } else {
+      setBlogs(prevBlogs =>
+        prevBlogs.map(blog =>
+          blog.id === updatedBlogOrId.id ? updatedBlogOrId : blog
+        )
+      )
+    }
+  }
+
   if (user === null) {
     return (
       <div>
@@ -123,9 +135,16 @@ const App = () => {
       </Togglable>
 
 
-      {blogs.map(blog => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      {blogs
+        .slice()
+        .map(blog => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            user={user}
+            updateBlogList={updateBlogList}
+          />
+        ))}
     </div>
   )
 }
