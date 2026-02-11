@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
+import userEvent from '@testing-library/user-event'
 
 describe('<Blog />', () => {
   const blog = {
@@ -39,5 +40,22 @@ describe('<Blog />', () => {
     // Likes NOT visible
     expect(screen.queryByText(/likes/i))
         .toBeNull()
+  })
+
+  test('URL and likes are shown when view button is clicked', async () => {
+    render(<Blog blog={blog} user={user} />)
+
+    const viewButton = screen.getByText('view')
+
+    const userInteraction = userEvent.setup()
+    await userInteraction.click(viewButton)
+
+    // Now URL should be visible
+    expect(screen.getByText('http://example.com'))
+      .toBeInTheDocument()
+
+    // Likes should now be visible
+    expect(screen.getByText(/likes 5/i))
+      .toBeInTheDocument()
   })
 })
