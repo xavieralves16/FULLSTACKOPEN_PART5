@@ -88,5 +88,30 @@ test.describe('Blog app', () => {
         expect(newLikes).toBe(initialLikes + 1)
         })
 
+    test('user who created a blog can delete it', async ({ page }) => {
+
+        await page.getByRole('button', { name: /create new blog/i }).click()
+        const inputs = page.locator('input')
+        const count = await inputs.count()
+        await inputs.nth(count - 3).fill('Deletable Blog')
+        await inputs.nth(count - 2).fill('John Doe')
+        await inputs.nth(count - 1).fill('http://example.com')
+        await page.getByRole('button', { name: /create/i }).click()
+
+        const blog = page.locator('div.blog').filter({ hasText: 'Deletable Blog' }).first()
+        await expect(blog).toBeVisible({ timeout: 10000 })
+
+        const viewButton = blog.locator('button').filter({ hasText: 'view' }).first()
+        await viewButton.click()
+
+        page.once('dialog', dialog => dialog.accept())
+
+        const removeButton = blog.locator('button').filter({ hasText: 'remove' }).first()
+        await removeButton.click()
+
+        await expect(blog).toHaveCount(0)
+    })
+
+
   })
 })
