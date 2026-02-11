@@ -6,7 +6,6 @@ async function login(page, username, password, displayName) {
   await page.locator('input').nth(0).fill(username)
   await page.locator('input').nth(1).fill(password)
   await page.getByRole('button', { name: /login/i }).click()
-  // Corrigido para usar o nome que aparece no UI
   await expect(page.getByText(`${displayName} logged in`)).toBeVisible()
 }
 
@@ -101,6 +100,22 @@ test.describe('Blog app', () => {
       await deleteBlog(blog, page)
     })
 
+    test('only the user who added a blog can see the delete button', async ({ page, request }) => {
+
+        await page.getByRole('button', { name: /logout/i }).click()
+
+
+        const otherUser = { name: 'Other User', username: 'other', password: 'secret' }
+        await request.post('http://localhost:3003/api/users', { data: otherUser })
+        await login(page, 'other', 'secret', 'Other User')
+
+        const blogToCheck = page.locator('div.blog').first()
+        const viewButton = blogToCheck.locator('button').filter({ hasText: 'view' }).first()
+        await viewButton.click()
+
+        const removeButton = blogToCheck.locator('button').filter({ hasText: 'remove' })
+        await expect(removeButton).toHaveCount(0)
+        })
   })
 
 })
