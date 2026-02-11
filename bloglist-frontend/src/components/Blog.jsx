@@ -51,18 +51,19 @@ const Blog = ({ blog, user, updateBlogList }) => {
   const showDelete = user?.username === blog.user.username
 
   return (
-    <div style={blogStyle}>
-      <div>
-        {blog.title} {blog.author}
+    <div style={blogStyle} className="blog">
+      <div className="blog-summary">
+        <span className="blog-title">{blog.title}</span>{' '}
+        <span className="blog-author">{blog.author}</span>
         <button onClick={toggleVisibility}>
           {visible ? 'hide' : 'view'}
         </button>
       </div>
 
       {visible && (
-        <div>
-          <div>{blog.url}</div>
-          <div>
+        <div className="blog-details">
+          <div className="blog-url">{blog.url}</div>
+          <div className="blog-likes">
             likes {likes} <button onClick={handleLike}>like</button>
           </div>
           <div>{blog.user?.name}</div>
@@ -71,6 +72,7 @@ const Blog = ({ blog, user, updateBlogList }) => {
       )}
     </div>
   )
+
 }
 
 export default Blog
