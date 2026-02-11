@@ -16,6 +16,12 @@ export default [
         sourceType: 'module'
       }
     },
+    files: ['**/*.test.{js,jsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.vitest
+      }
+    },
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh
