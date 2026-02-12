@@ -1,0 +1,23 @@
+{
+  "name": "fullstackopen_part5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xavieralves16/FULLSTACKOPEN_PART5.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/xavieralves16/FULLSTACKOPEN_PART5/issues"
+  },
+  "homepage": "https://github.com/xavieralves16/FULLSTACKOPEN_PART5#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.2.3"
+  }
+}
