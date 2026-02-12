@@ -53,11 +53,11 @@ test.describe('Blog app', () => {
 
   test.beforeEach(async ({ page, request }) => {
     await request.post('http://localhost:3003/api/testing/reset')
-
     const user = { name: 'Test User', username: 'test', password: 'password' }
     await request.post('http://localhost:3003/api/users', { data: user })
 
     await page.goto('http://localhost:5173')
+
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -116,6 +116,40 @@ test.describe('Blog app', () => {
         const removeButton = blogToCheck.locator('button').filter({ hasText: 'remove' })
         await expect(removeButton).toHaveCount(0)
         })
+    
+    test('blogs are ordered by likes descending', async ({ page }) => {
+        const blog1 = await createBlog(page, 'First Blog', 'Author A', 'http://a.com')
+        const blog2 = await createBlog(page, 'Second Blog', 'Author B', 'http://b.com')
+
+        await likeBlog(blog1)
+        await likeBlog(blog2)
+        const secondLikesDiv = blog2.locator('div.blog-likes').first()
+        const secondLikeButton = secondLikesDiv.locator('button').filter({ hasText: 'like' }).first()
+        await secondLikeButton.click() 
+
+        await page.waitForTimeout(500) 
+
+        const blogs = page.locator('div.blog')
+        const count = await blogs.count()
+
+        for (let i = 0; i < count; i++) {
+        const viewButton = blogs.nth(i).locator('button', { hasText: 'view' })
+        if (await viewButton.count() > 0) {
+            await viewButton.click()
+        }
+        }
+
+
+        let previousLikes = Infinity
+        for (let i = 0; i < count; i++) {
+            const likesText = await blogs.nth(i).locator('.blog-likes').innerText()
+            const likes = parseInt(likesText.match(/\d+/)[0], 10)
+            expect(likes).toBeLessThanOrEqual(previousLikes)
+            previousLikes = likes
+        }
+        })
+
+
   })
 
 })
